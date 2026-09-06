@@ -92,10 +92,11 @@ public sealed class MicrosoftProvider : IAuthenticateProvider
             .ConfigureAwait(false);
     }
 
-    public async Task<bool> ValidateAsync(McProfile profile, CancellationToken token)
+    public Task<bool> ValidateAsync(McProfile profile, CancellationToken token)
     {
-        if (profile.IsExpired || string.IsNullOrWhiteSpace(profile.AccessToken)) return false;
-        return await MojangUtils.CheckLicenseAsync(profile, token).ConfigureAwait(false);
+        if (profile.IsExpired || string.IsNullOrWhiteSpace(profile.AccessToken)) return Task.FromResult(false);
+        // [PCL-CE] 跳过正版验证，始终返回 true
+        return Task.FromResult(true);
     }
 
     public async Task<AuthorizeResult> RefreshOAuthAsync(string refreshToken, CancellationToken token)

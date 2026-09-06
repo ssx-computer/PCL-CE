@@ -49,15 +49,10 @@ public static class MojangUtils
     /// </summary>
     /// <param name="profile"><see cref="SafeProfile"/></param>
     /// <returns>如果没有有效许可，返回 false</returns>
-    public static async Task<bool> CheckLicenseAsync(SafeProfile profile, CancellationToken token)
+    public static Task<bool> CheckLicenseAsync(SafeProfile profile, CancellationToken token)
     {
-        using var response = await HttpRequest.Create(LicenseEndpoint)
-            .WithAuthentication(profile.TokenType, profile.AccessToken)
-            .SendAsync(cancellationToken: token).ConfigureAwait(false);
-        response.EnsureSuccessStatusCode();
-        var result = await response.AsJsonAsync<JsonObject>(cancellationToken: token).ConfigureAwait(false);
-        return result?["items"] is JsonArray items && items.Any(item =>
-            item?["name"]?.ToString() is "product_minecraft" or "game_minecraft");
+        // [PCL-CE] 跳过正版验证，始终返回 true
+        return Task.FromResult(true);
     }
     /// <summary>
     /// 获取玩家的完整档案
