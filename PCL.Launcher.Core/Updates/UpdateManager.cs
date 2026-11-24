@@ -277,7 +277,8 @@ public static class UpdateManager
                 });
             if (triggerRestartAndByEnd)
             {
-                UpdateUi.Current?.ExitApplication(true);
+                // 更新器已负责在替换完成后启动新版本，当前进程只退出，避免双重重启与文件替换竞争。
+                UpdateUi.Current?.ExitApplication(false);
                 LauncherCommon.Log("[System] 已由于更新强制结束程序");
             }
         }
