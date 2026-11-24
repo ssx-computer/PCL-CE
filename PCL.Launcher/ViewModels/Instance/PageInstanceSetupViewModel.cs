@@ -13,10 +13,6 @@ using PCL.Core.Utils.OS;
 using PCL.Core.ViewModel;
 using PCL.Navigation;
 using PCL.Views.Pages.Launch;
-// ReSharper disable once RedundantUsingDirective
-using PCL.Core.IO.Net;
-// ReSharper disable once RedundantUsingDirective
-using PCL.Core.Minecraft.Profile;
 
 namespace PCL;
 
@@ -683,20 +679,7 @@ public partial class PageInstanceSetupViewModel : ViewModelBase
 
     public static bool CanCreateOtherProfile()
     {
-#if DEBUG || DEBUGCI
         return true;
-#else
-        try
-        {
-            return ProfileService.HasMicrosoftProfile
-                   || (Lang.IsFeaturesUnrestricted && ProfileService.Profiles.Count > 0)
-                   || !NetworkHelper.IsNetworkAvailable();
-        }
-        catch
-        {
-            return false;
-        }
-#endif
     }
 
     public async Task<bool> ApplyRendererAsync(int index)

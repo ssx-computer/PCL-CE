@@ -7,11 +7,11 @@ namespace PCL.Core.Test;
 public class RegionPolicyTest
 {
     [TestMethod]
-    public void ChinaTimeZoneAndChinaRegionRestrict()
+    public void ChinaTimeZoneAndChinaRegionDoNotRestrict()
     {
         var result = RegionPolicy.Evaluate(Signals("CN", "China Standard Time"));
         Assert.AreEqual(RegionClassification.Mainland, result.Classification);
-        Assert.IsTrue(result.IsRestricted);
+        Assert.IsFalse(result.IsRestricted);
     }
 
     [TestMethod]

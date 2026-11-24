@@ -30,15 +30,6 @@ public static partial class GameLaunch
 
         _ValidateLaunchPath();
         _ValidateLaunchInstance();
-
-#if BETA
-        _ShowDonateHint();
-#endif
-
-#if DEBUG || DEBUGCI
-        return;
-#endif
-        _ShowPurchaseHint();
     }
 
     private static void _ValidateLaunchPath()
@@ -147,101 +138,6 @@ public static partial class GameLaunch
             },
             _ => checkResult
         };
-    }
-
-#if BETA
-    private static readonly HashSet<int> DonateHintLaunchCounts =
-    [
-        10,
-        20,
-        40,
-        60,
-        80,
-        100,
-        120,
-        150,
-        200,
-        250,
-        300,
-        350,
-        400,
-        500,
-        600,
-        700,
-        800,
-        900,
-        1000,
-        1200,
-        1400,
-        1600,
-        1800,
-        2000,
-    ];
-
-    private static void _ShowDonateHint()
-    {
-        if (currentLaunchOptions?.SaveBatch is not null)
-            return;
-
-        LauncherCommon.RunInNewThread(
-            () =>
-            {
-                if (!DonateHintLaunchCounts.Contains(States.System.LaunchCount))
-                    return;
-
-                if (LaunchUi.ShowMessageBox(
-                        Lang.Text("Minecraft.Launch.Donate.Message", States.System.LaunchCount),
-                        Lang.Text("Minecraft.Launch.Donate.Title", States.System.LaunchCount),
-                        Lang.Text("Minecraft.Launch.Donate.Support"),
-                        Lang.Text("Minecraft.Launch.Donate.Decline")
-                    ) == 1)
-                {
-                    LauncherUi.Interaction?.OpenWebsite("https://afdian.com/a/LTCat");
-                }
-            },
-            "Donate");
-    }
-#endif
-
-    private static void _ShowPurchaseHint()
-    {
-        if (ProfileService.HasMicrosoftProfile)
-            return;
-
-        if (Lang.IsFeaturesUnrestricted)
-        {
-            if (LaunchUi.ShowMessageBox(
-                    Lang.Text("Minecraft.Launch.PurchaseHint.Message"),
-                    Lang.Text("Minecraft.Launch.PurchaseHint.Title"),
-                    Lang.Text("Minecraft.Launch.PurchaseHint.Purchase"),
-                    Lang.Text("Minecraft.Launch.PurchaseHint.Later")
-                )
-                == 1)
-                LauncherUi.Interaction?.OpenWebsite(
-                    "https://www.xbox.com/zh-cn/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj");
-            return;
-        }
-
-        switch (LaunchUi.ShowMessageBox(
-                    Lang.Text("Minecraft.Launch.AccountVerification.Message"),
-                    Lang.Text("Minecraft.Launch.AccountVerification.Title"),
-                    Lang.Text("Minecraft.Launch.AccountVerification.Purchase"),
-                    Lang.Text("Minecraft.Launch.AccountVerification.Demo"),
-                    Lang.Text("Minecraft.Launch.AccountVerification.Back"),
-                    button1Action: () =>
-                        LauncherUi.Interaction?.OpenWebsite(
-                            "https://www.xbox.com/zh-cn/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj")))
-        {
-            case 2:
-                LauncherUi.Interaction?.ShowHint(
-                    Lang.Text("Minecraft.Launch.DemoMode"),
-                    NotificationType.Error);
-                currentLaunchOptions!.ExtraArgs.Add("--demo");
-                break;
-
-            case 3:
-                throw new Exception("$$");
-        }
     }
 
     public static bool isLaunching;

@@ -19,7 +19,8 @@ public sealed record RegionSignals(
 
 public sealed record RegionAssessment(RegionClassification Classification, string Reason)
 {
-    public bool IsRestricted => Classification == RegionClassification.Mainland;
+    /// <summary>本分支不启用基于设备地区的本地功能限制。</summary>
+    public bool IsRestricted => false;
 }
 
 public static class RegionPolicy
@@ -36,9 +37,9 @@ public static class RegionPolicy
     {
         ArgumentNullException.ThrowIfNull(signals);
 
-        // 仅在“时区为中国大陆”且“设备地区为中国大陆”时启用限制。
+        // 分类仅用于诊断：时区为中国大陆且设备地区为中国大陆时归类为 Mainland。
         // 设备地区取系统“国家或地区”设置，而不是 OOBE 时写入的设备安装地区。
-        // 任一项无法确认或不为中国大陆，均不限制。
+        // 本分支不会根据该分类限制功能。
         var chinaTimeZone = signals is { TimeZoneAvailable: true, TimeZoneId: not null }
             && _ChinaTimeZones.Contains(signals.TimeZoneId);
         var chinaRegion = signals.GeoNameAvailable && _IsChinaGeoName(signals.GeoName);
