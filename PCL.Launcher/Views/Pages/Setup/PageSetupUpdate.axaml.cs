@@ -6,7 +6,7 @@ using PCL.UI.Controls;
 namespace PCL.Views.Pages.Setup;
 
 /// <summary>
-/// 更新设置页：更新通道、自动更新行为、MirrorChyan CDK 与检查更新入口。 检查更新、安装进度与更新日志由
+/// 更新设置页：更新通道、MirrorChyan CDK 与手动检查更新入口。检查更新、安装进度与更新日志由
 /// <see cref="PageSetupUpdateViewModel" /> 负责。
 /// </summary>
 public partial class PageSetupUpdate : MyPageRight
@@ -32,7 +32,6 @@ public partial class PageSetupUpdate : MyPageRight
         BtnChangelog.Click += (_, _) => PageSetupUpdateViewModel.OpenReleasesPage();
         BtnChangelogDetail.Click += async (_, _) => await ViewModel.ShowChangelogAsync();
         BtnUpdate.Click += async (_, _) => await ViewModel.StartUpdateAsync();
-        ComboSystemUpdateMode.IsEnabled = UpdateManager.SupportsInAppUpdate;
         Loaded += async (_, _) =>
         {
             if (_loaded) return;
@@ -81,10 +80,6 @@ public partial class PageSetupUpdate : MyPageRight
                 (int)Config.Update.UpdateChannel,
                 0,
                 2);
-            ComboSystemUpdateMode.SelectedIndex = Math.Clamp(
-                (int)Config.Update.UpdateMode,
-                0,
-                3);
         }
         finally
         {

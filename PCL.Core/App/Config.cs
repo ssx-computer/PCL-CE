@@ -114,11 +114,6 @@ public static partial class Config
     [ConfigGroup("Update")] partial class UpdateConfigGroup
     {
         /// <summary>
-        /// 自动更新行为。
-        /// </summary>
-        [ConfigItem<LauncherAutoUpdateBehavior>("SystemSystemUpdate", LauncherAutoUpdateBehavior.DownloadAndAnnounce, ConfigSource.Local)] public partial LauncherAutoUpdateBehavior UpdateMode { get; set; }
-
-        /// <summary>
         /// 更新分支。
         /// </summary>
         [ConfigItem<UpdateChannel>("SystemUpdateChannel", UpdateChannel.Release, ConfigSource.Local)] public partial UpdateChannel UpdateChannel { get; set; }

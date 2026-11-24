@@ -33,6 +33,7 @@ public sealed class StartupEffects(
         try
         {
             UiLogBridge.Install();
+            Basics.RunInNewThread(BundledMcTunnel.Start, "BundledMcTunnel");
             GameFolders.ApplySelectedFolder(States.Game.SelectedFolder);
             LauncherCommon.ModeDebug = Config.Debug.Enabled;
             PrepareWindowAnimation();
@@ -154,7 +155,7 @@ public sealed class StartupEffects(
         try
         {
             GameDownload.dlClientListMojangLoader.Start(1);
-            UpdateManager.serverLoader.Start(1);
+            UpdateManager.announcementLoader.Start(1);
             States.System.StartupCount += 1;
         }
         catch (Exception ex)

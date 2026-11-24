@@ -50,9 +50,24 @@
         </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Assets\Images\icon.png" Link="Assets\Images\icon.png" CopyToOutputDirectory="PreserveNewest" />
-        <Content Include="..\LICENSE" Link="LICENSE" CopyToOutputDirectory="PreserveNewest" />
-        <Content Include="..\PCL.Launcher.Core\LICENCE" Link="LICENCE.PCL.Launcher.Core" CopyToOutputDirectory="PreserveNewest" />
+        <Content Include="Assets\Images\icon.png"
+                 Link="Assets\Images\icon.png"
+                 CopyToOutputDirectory="PreserveNewest"
+                 Condition="'$(PublishSingleFile)' != 'true'" />
+        <Content Include="..\LICENSE"
+                 Link="LICENSE"
+                 CopyToOutputDirectory="PreserveNewest"
+                 Condition="'$(PublishSingleFile)' != 'true'" />
+        <Content Include="..\PCL.Launcher.Core\LICENCE"
+                 Link="LICENCE.PCL.Launcher.Core"
+                 CopyToOutputDirectory="PreserveNewest"
+                 Condition="'$(PublishSingleFile)' != 'true'" />
+        <EmbeddedResource Include="..\LICENSE"
+                         LogicalName="PCL.LICENSE"
+                         Condition="'$(PublishSingleFile)' == 'true'" />
+        <EmbeddedResource Include="..\PCL.Launcher.Core\LICENCE"
+                         LogicalName="PCL.LICENCE.PCL.Launcher.Core"
+                         Condition="'$(PublishSingleFile)' == 'true'" />
     </ItemGroup>
     <ItemGroup>
         <AvaloniaResource Include="Assets/IconPacks/**" />

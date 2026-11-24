@@ -30,10 +30,10 @@ public static class UpdateManager
 
     public static Loading.LoaderCombo<JsonObject> updateLoader;
 
-    public static Loading.LoaderTask<int, int> serverLoader =
+    public static Loading.LoaderTask<int, int> announcementLoader =
         new(
             Lang.Text("Update.Service.PclCe"),
-            _ => LoadOnlineInfo(),
+            _ => AnnouncementService.Load(),
             priority: ThreadPriority.BelowNormal);
 
     public static bool SupportsInAppUpdate => UpdatePolicies.Current.SupportsInAppUpdate;
@@ -100,6 +100,12 @@ public static class UpdateManager
         string? receivedKey = null,
         bool forceValidated = false)
     {
+        if (type != UpdateEnums.UpdateType.UpdateNow)
+        {
+            LauncherCommon.Log("[Update] 自动更新已禁用，仅允许从更新页面手动安装");
+            return;
+        }
+
         if (!SupportsInAppUpdate && type != UpdateEnums.UpdateType.PromptOnly)
         {
             LauncherCommon.Log("[Update] 当前平台不支持应用内安装，已改为手动下载");
@@ -323,53 +329,6 @@ public static class UpdateManager
             };
         loader.Start();
         loader.WaitForExit();
-    }
-
-    private static void LoadOnlineInfo()
-    {
-        ScheduleBasedOnConfig();
-        AnnouncementService.Load();
-    }
-
-    private static void ScheduleBasedOnConfig()
-    {
-        if (!SupportsInAppUpdate)
-        {
-            if (Config.Update.UpdateMode == LauncherAutoUpdateBehavior.Disable)
-            {
-                LauncherCommon.Log("[Update] 更新设置: 不自动检查更新");
-                return;
-            }
-
-            // macOS/Linux 当前只检测并提示；安装交给 DMG/Flatpak/发布页。
-            LauncherCommon.Log("[Update] 当前平台仅检查更新，不自动下载");
-            UpdateStart(UpdateEnums.UpdateType.PromptOnly);
-            return;
-        }
-
-        switch (Config.Update.UpdateMode)
-        {
-            case LauncherAutoUpdateBehavior.DownloadAndInstall:
-                LauncherCommon.Log("[Update] 更新设置: 自动下载并安装更新");
-                if (GetVersionStatus() != UpdateEnums.VersionStatus.Latest)
-                    UpdateStart(UpdateEnums.UpdateType.Silent);
-                break;
-
-            case LauncherAutoUpdateBehavior.DownloadAndAnnounce:
-                LauncherCommon.Log("[Update] 更新设置: 自动下载并提示更新");
-                UpdateStart(UpdateEnums.UpdateType.DownloadAndPrompt);
-                break;
-
-            case LauncherAutoUpdateBehavior.AnnounceOnly:
-                LauncherCommon.Log("[Update] 更新设置: 提示更新");
-                UpdateStart(UpdateEnums.UpdateType.PromptOnly);
-                break;
-
-            case LauncherAutoUpdateBehavior.Disable:
-            default:
-                LauncherCommon.Log("[Update] 更新设置: 不自动检查更新");
-                return;
-        }
     }
 
     /// <summary>展示社区版提示</summary>

@@ -45,12 +45,6 @@ public partial class PageSetupUpdateViewModel : ViewModelBase
 
     [ObservableProperty] public partial bool UpdateButtonEnabled { get; set; } = true;
 
-    [ObservableProperty]
-    public partial int UpdateModeIndex { get; set; } = Math.Clamp(
-        (int)Config.Update.UpdateMode,
-        0,
-        3);
-
     [ObservableProperty] public partial string UpdateNameText { get; set; } = string.Empty;
 
     public string ChangelogText =>
@@ -97,16 +91,10 @@ public partial class PageSetupUpdateViewModel : ViewModelBase
         OnPropertyChanged(nameof(ChangelogText));
     }
 
-    partial void OnUpdateModeIndexChanged(int value)
-    {
-        if (value >= 0) Config.Update.UpdateMode = (LauncherAutoUpdateBehavior)value;
-    }
-
     public void Reload()
     {
         CurrentVersionText = "PCL CE " + VersionNameFormat(LauncherCommon.VersionBaseName);
         MirrorChyanKey = Config.Update.MirrorChyanKey;
-        UpdateModeIndex = Math.Clamp((int)Config.Update.UpdateMode, 0, 3);
         SetUpdateButtonState(InstallButtonState);
         UpdateButtonEnabled = !IsFlatpak;
     }

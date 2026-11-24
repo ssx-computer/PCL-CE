@@ -106,17 +106,6 @@ public enum LinkRelayBehavior
     ForceRelay = 1
 }
 
-/// <summary>
-/// 启动器更新行为
-/// </summary>
-public enum LauncherAutoUpdateBehavior
-{
-    DownloadAndInstall = 0,
-    DownloadAndAnnounce = 1,
-    AnnounceOnly = 2,
-    Disable = 3
-}
-
 public enum LauncherTitleType
 {
     None = 0,
